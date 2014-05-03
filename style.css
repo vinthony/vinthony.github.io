@@ -1,14 +1,22 @@
 html,body{
 	padding: 0px;
 	margin: 0px;
+	background-color: #e3e3e3;
+	color: #333;
 }
-body{
-	position: relative;
-	margin: 0 auto;
-	width: 960px;
-	height: 100%;
-	border: 1px solid #e3e3e3;
-	box-shadow: 3px 3px 3px #eee;
+.container{
+	position: absolute;
+	background-color: #fff;
+	width: 80%;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	left: 0;
+	margin: auto;
+	height: 320px;
+	box-shadow: 2px 2px 2px 2px #e3e3e3;
+	border-top: 15px solid #333;
+
 }
 .vin-title{
 	margin-left: 50px;
@@ -16,7 +24,7 @@ body{
 	font-size: 30px;
 	font-family: serif;
 	width: 30px;
-	padding-right: 4px;
+	padding-right: 6px;
 	border-right: 1px solid #aaa;
 }
 ul,li{
@@ -27,17 +35,27 @@ ul,li{
 ul{
 	position: absolute;
 	top: 20px;
-	left: 300px;
+	left: 150px;
 	z-index: 999;
 }
 li{
 	position: relative;
 	width: 100px;
 	height: 100px;
+	display: inline-block;
 	background-color: #e3e3e3;
 	border-radius: 50px;	
 	text-align: center;
-	margin: 20px;
+	margin: 80px 40px;
+}
+@media (max-width: 657px){
+	ul{
+		top: 40px;
+	}
+	li{
+		display: block;
+		margin: 10px;
+	}
 }
 a{
 	text-decoration: none;
