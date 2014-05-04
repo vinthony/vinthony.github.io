@@ -7,16 +7,23 @@ html,body{
 .container{
 	position: absolute;
 	background-color: #fff;
-	width: 80%;
+	width:60%;
 	top: 0;
 	bottom: 0;
 	right: 0;
 	left: 0;
 	margin: auto;
-	height: 320px;
-	box-shadow: 2px 2px 2px 2px #e3e3e3;
+	height: 22em;
+	box-shadow: 2px 4px 2px 2px #e3e3e3;
 	border-top: 15px solid #333;
-
+}
+.title-img{
+	margin: auto 0;
+	top: 0;
+	bottom: 0;
+	position: absolute;
+	margin-left: 30px;
+	border-right: 1px solid #aaa;
 }
 .vin-title{
 	margin-left: 50px;
@@ -24,6 +31,7 @@ html,body{
 	font-size: 30px;
 	font-family: serif;
 	width: 30px;
+	line-height: 1.2em;
 	padding-right: 6px;
 	border-right: 1px solid #aaa;
 }
@@ -46,7 +54,7 @@ li{
 	background-color: #e3e3e3;
 	border-radius: 50px;	
 	text-align: center;
-	margin: 80px 40px;
+	margin:6em 40px;
 }
 @media (max-width: 657px){
 	ul{

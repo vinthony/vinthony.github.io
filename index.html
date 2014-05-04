@@ -7,12 +7,21 @@
 	</head>
 	<body>
 		<div class='container'>
-			<h3 class='vin-title'>寸晓东不是万能的</h3>
-			<ul>
+			<!--<h3 class='vin-title'>寸晓东不是万能的</h3>-->
+			<img class='title-img' src="title.png">
+			<ul class='projects'>
 				<li><a traget="_blank" href="http://www.jinge234.com">锦歌</a></li>
 				<li><a href="Hupo_Ver_0.7.apk">虎扑</a></li>
 			</ul>
+			<div id='clock'>
+
+			</div>
 		</div>
-		
+		<script type="text/javascript" src='script.js'></script>
+		<script type="text/javascript">
+			Weight.Clock($("clock"));
+			var Item = document.querySelector(".projects");
+			//Animate.trigger(Item,"li",{"backgroundColor":"#eee"});
+		</script>
 	</body>
 	</html>
