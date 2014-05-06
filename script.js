@@ -4,16 +4,27 @@ function $(id){
 	return document.getElementById(id);
 }
 (function(a){
-	var trigger=function(element,which,toChange){
-		element.addEventListener("mouseenter",function(e){
-			console.log(e.currentTarget.tagName);
-			if(e.currentTarget.tagName == "ul".toUpperCase()){
-				for(var i in toChange){
-					e.currentTarget.style[i] = toChange[i];
+	var trigger=function(element,toChange){
+		var snapshot =Array.prototype.slice.call(element,0);
+		for (var i = snapshot.length-1 ; i >= 0; i--) {
+			snapshot[i].addEventListener("mouseover",function(e){
+				if(e.target.tagName == "a".toUpperCase()){
+					for(var i in toChange){
+						e.target.style[i] = toChange[i];
+					}
 				}
-			}
-		},false);
-	}
+			},false);
+		};
+		for (var i = snapshot.length-1 ; i >= 0; i--) {
+			snapshot[i].addEventListener("mouseout",function(e){
+				if(e.target.tagName == "a".toUpperCase()){
+					for(var i in toChange){
+						e.target.style[i] = "";
+					}
+				}
+			},false);	
+		};
+	};
 	a.trigger=trigger;
 })(Animate);
 (function(w){

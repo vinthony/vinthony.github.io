@@ -29,9 +29,8 @@
 			window.onload=function(){
 				Weight.Clock($("clock"));
 				Weight.ipodCtrl($("ipod"));
+				Animate.trigger(document.querySelectorAll("li"),{"borderBottom":"1px solid"});
 			}
-			var Item = document.querySelector(".projects");
-			//Animate.trigger(Item,"li",{"backgroundColor":"#eee"});
 		</script>
 	</body>
 	</html>
