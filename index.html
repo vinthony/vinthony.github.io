@@ -6,6 +6,13 @@
 		<link rel="stylesheet" type="text/css" href="style.css">
 	</head>
 	<body>
+		<canvas id='cvs'></canvas>
+		<div id='ipod'>
+			<div class='ipod-small-circle circle hv-middle'>
+				<div class='ipod-inner-point circle hv-middle'></div>
+			</div>
+			<audio  src='music.mp3'  loop autoplay autoplay></audio>
+	    </div>		
 		<div class='container'>
 			<!--<h3 class='vin-title'>寸晓东不是万能的</h3>-->
 			<img class='title-img' src="title.png">
@@ -15,22 +22,10 @@
 			</ul>
 			<div id='clock'></div>
 		</div>
-		<div id='ipod'>
-				<div class="ipod-big-circle circle hv-middle">
-					<div class='ipod-small-circle circle hv-middle'>
-						<div class='ipod-inner-point circle hv-middle'></div>
-					</div>
-				</div>
-				<audio  src='music.mp3'  loop autoplay autoplay></audio>
-			</div>
 		<div id='footer'> -- <a href='http://vinthony.github.com'>@Vinthony</a> -- </div>
 		<script type="text/javascript" src='script.js'></script>
 		<script type="text/javascript">
-			window.onload=function(){
-				Weight.Clock($("clock"));
-				Weight.ipodCtrl($("ipod"));
-				Animate.trigger(document.querySelectorAll("li"),{"borderBottom":"1px solid"});
-			}
+			
 		</script>
 	</body>
 	</html>

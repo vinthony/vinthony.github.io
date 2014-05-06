@@ -1,5 +1,12 @@
 var Weight={};
 var Animate={};
+var drawListener=null;
+window.onload=function(){
+				Weight.Clock($("clock"));
+				Weight.ipodCtrl($("ipod"));
+				Animate.trigger(document.querySelectorAll("li"),{"borderBottom":"1px solid"});
+				drawListener=setInterval(drawCanvas,150);
+			}
 function $(id){
 	return document.getElementById(id);
 }
@@ -93,12 +100,28 @@ function $(id){
 		element.addEventListener("click",function(e){
 			if(this.childNodes[3].paused){
 				this.childNodes[3].play();
-				element.childNodes[1].style.backgroundColor="#333";
+				drawListener=setInterval(drawCanvas,150);
+				//element.childNodes[1].style.backgroundColor="#333";
 			}else{
 				this.childNodes[3].pause();
-				element.childNodes[1].style.backgroundColor="#aaa";
+				console.log(drawListener);
+				clearInterval(drawListener);
+				//element.childNodes[1].style.backgroundColor="#aaa";
 			}
 		},false);
 	}
 	w.ipodCtrl=ipodCtrl;
 })(Weight);
+function drawCanvas(){
+			var cvs=document.getElementById("cvs").getContext("2d");
+			var time = new Date();
+			cvs.rotate(time.getSeconds()*Math.PI/180);
+			var grd=cvs.createRadialGradient(0,0,100,100,100,100);
+			grd.addColorStop(0,"#333");
+			grd.addColorStop(1,"#555");
+			cvs.beginPath();
+			cvs.arc(0,0,100,0,Math.PI*2);
+			cvs.closePath();
+			cvs.fillStyle=grd;
+			cvs.fill();
+}
