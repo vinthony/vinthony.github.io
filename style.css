@@ -92,6 +92,7 @@ li>a{
 }
 #ipod{
 	position: absolute;
+	cursor: pointer;
 	left: -50px;
 	top: -50px;
 }
