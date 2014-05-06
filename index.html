@@ -13,14 +13,23 @@
 				<li><a traget="_blank" href="http://www.jinge234.com">锦歌</a></li>
 				<li><a href="Hupo_Ver_0.7.apk">虎扑</a></li>
 			</ul>
-			<div id='clock'>
-
-			</div>
+			<div id='clock'></div>
 		</div>
+		<div id='ipod'>
+				<div class="ipod-big-circle circle hv-middle">
+					<div class='ipod-small-circle circle hv-middle'>
+						<div class='ipod-inner-point circle hv-middle'></div>
+					</div>
+				</div>
+				<audio  src='music.mp3'  loop autoplay autoplay></audio>
+			</div>
 		<div id='footer'> -- <a href='http://vinthony.github.com'>@Vinthony</a> -- </div>
 		<script type="text/javascript" src='script.js'></script>
 		<script type="text/javascript">
-			Weight.Clock($("clock"));
+			window.onload=function(){
+				Weight.Clock($("clock"));
+				Weight.ipodCtrl($("ipod"));
+			}
 			var Item = document.querySelector(".projects");
 			//Animate.trigger(Item,"li",{"backgroundColor":"#eee"});
 		</script>

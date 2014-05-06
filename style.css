@@ -1,4 +1,5 @@
 html,body{
+	overflow: hidden;
 	padding: 0px;
 	margin: 0px;
 	background-color: #e3e3e3;
@@ -43,7 +44,7 @@ ul,li{
 ul{
 	position: absolute;
 	top: 20px;
-	left: 150px;
+	left: 20%;
 	z-index: 999;
 }
 li{
@@ -56,8 +57,9 @@ li{
 	text-align: center;
 	margin:6em 40px;
 }
-@media (max-width: 657px){
+@media (max-width: 800px){
 	ul{
+		left: 40%;
 		top: 40px;
 	}
 	li{
@@ -87,4 +89,48 @@ li>a{
 	right: 0;
 	top: 40%;
 	position: absolute;
+}
+#ipod{
+	position: absolute;
+	left: -50px;
+	top: -50px;
+}
+.h-middle{
+	position: absolute;
+	margin: 0 auto;
+	left: 0;
+	right: 0;
+}
+.v-middle{
+	position: absolute;
+	bottom: 0;
+	top: 0;
+}
+.hv-middle{
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	margin: auto;
+}
+.circle{
+	border-radius: 100%;
+}
+.ipod-big-circle,#ipod{
+	width: 100px;
+	height: 100px;
+}
+.ipod-big-circle{
+	background-color: #333;
+}
+.ipod-small-circle{
+	width: 30px;
+	height: 30px;
+	background-color: brown;
+}
+.ipod-inner-point{
+	background-color: #e3e3e3;
+	width: 5px;
+	height: 5px;
 }

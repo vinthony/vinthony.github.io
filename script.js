@@ -77,3 +77,17 @@ function $(id){
 	}
 	w.Clock = Clock;
 })(Weight);
+(function(w){
+	var ipodCtrl=function(element){
+		element.addEventListener("click",function(e){
+			if(this.childNodes[3].paused){
+				this.childNodes[3].play();
+				element.childNodes[1].style.backgroundColor="#333";
+			}else{
+				this.childNodes[3].pause();
+				element.childNodes[1].style.backgroundColor="#aaa";
+			}
+		},false);
+	}
+	w.ipodCtrl=ipodCtrl;
+})(Weight);
