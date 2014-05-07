@@ -2,14 +2,20 @@ var Weight={};
 var Animate={};
 var drawListener=null;
 window.onload=function(){
+				initPage();
 				Weight.Clock($("clock"));
 				Weight.ipodCtrl($("ipod"));
 				Animate.trigger(document.querySelectorAll("li"),{"borderBottom":"1px solid"});
 				drawListener=setInterval(drawCanvas,150);
 			}
+
 function $(id){
 	return document.getElementById(id);
 }
+function initPage(){
+	drawCanvas();
+}
+
 (function(a){
 	var trigger=function(element,toChange){
 		var snapshot =Array.prototype.slice.call(element,0);
@@ -91,6 +97,7 @@ function $(id){
 		 		Calendar.innerHTML=y+"年"+m+"月"+d+"日";
 		 		Time.innerHTML=h+"时"+min+"分"+s;
 		};
+		reflashView();
 		setInterval(reflashView,1000);	
 	}
 	w.Clock = Clock;
@@ -112,16 +119,17 @@ function $(id){
 	}
 	w.ipodCtrl=ipodCtrl;
 })(Weight);
+
 function drawCanvas(){
-			var cvs=document.getElementById("cvs").getContext("2d");
-			var time = new Date();
-			cvs.rotate(time.getSeconds()*Math.PI/180);
-			var grd=cvs.createRadialGradient(0,0,100,100,100,100);
-			grd.addColorStop(0,"#333");
-			grd.addColorStop(1,"#555");
-			cvs.beginPath();
-			cvs.arc(0,0,100,0,Math.PI*2);
-			cvs.closePath();
-			cvs.fillStyle=grd;
-			cvs.fill();
+	var cvs=document.getElementById("cvs").getContext("2d");
+	var time = new Date();
+	cvs.rotate(time.getSeconds()*Math.PI/180);
+	var grd=cvs.createRadialGradient(0,0,100,100,100,100);
+		grd.addColorStop(0,"#333");
+		grd.addColorStop(1,"#555");
+	cvs.beginPath();
+	cvs.arc(0,0,100,0,Math.PI*2);
+	cvs.closePath();
+	cvs.fillStyle=grd;
+	cvs.fill();
 }
