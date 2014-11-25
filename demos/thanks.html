@@ -1,0 +1,219 @@
+<html>
+	<head>
+		<title>thanks</title>
+		<meta charset='utf8'>
+		<style>
+			*{
+				margin: 0;
+				padding: 0;
+			}
+		 	#main{
+		 		border:1px solid #000;
+		 	}
+		 	#debuggerer{
+		 		bottom: 0;
+		 		position: fixed;
+		 		width: 300px;
+		 		height: 200px;
+		 		background: rgba(30,30,30,0.3);
+		 	}
+		</style>
+	</head>
+
+	<body>
+		<div id='debuggerer'></div>
+		<canvas id='main'  width="1360" height="600" >
+			
+		</canvas>
+	</body>
+	<script>
+		var cvs = document.querySelector('#main');
+		var de = document.querySelector("#debuggerer");
+		var cxt = cvs.getContext('2d');
+		var hello = "Magic";
+		var originData = {};
+		// 创建渐变
+		var gradient=cxt.createLinearGradient(0,0,cvs.width,0);
+			gradient.addColorStop("0","magenta");
+			gradient.addColorStop("0.5","blue");
+			gradient.addColorStop("1.0","red");
+		var span = 15;//最大边缘
+		var textX = 0;//起始X
+		var textBaselineY = 400;//起始y
+		var data = {};
+		// 规定半径区间
+		// 3~10px
+		cxt.font = " 900 300px monospace";
+		cxt.fillStyle = gradient;
+		cxt.fillText(hello,textX,textBaselineY);
+		var shortcut = Math.ceil(cxt.measureText(hello).width); //字内容宽度
+		var  imageObj= cxt.getImageData(textX,textBaselineY-240,shortcut,300);
+		var imageData = imageObj.data;
+		function getRadius(){//圆的半径
+			//return 3;
+			return Math.floor(Math.random()*5+3);
+		}
+		function setColor(){//随机颜色
+			var colors = ["black","mediumblue","darkblue","navy","darkgreen","darkcyan","teal","darkturquoise","springgreen","dodgerblue","steelblue","maroon","gray","yellowgreen","teal","tomato","slateblue","scarlet","salmon","rubine","pansy","orangered","navy","red","lightpink","lightblue"];
+			var r = Math.floor(Math.random()*colors.length);
+			//return "black";
+			return colors[r];
+		}
+
+		function Point(x,y,r,c){
+			this.x = x;
+			this.y = y;
+			this.r = r;
+			this.c = c;
+			this.sx = 0;
+			this.sy = 0;
+			this.cx = x;
+			this.cy = y;
+			this.type = 1;//1为扩散，0为收缩
+			this.isActive = 0;
+		}
+		Point.prototype.setTarget = function(x,y){
+			this.sx = x;
+			this.sy = y;
+		}
+		Point.prototype.animate = function(){
+			if(this.type){//扩散过程
+				this.cx += this.offset(this.cx,this.sx);
+				this.cy += this.offset(this.cy,this.sy);
+			}else{
+				this.cx += this.offset(this.cx,this.x);
+				this.cy += this.offset(this.cy,this.y);
+			}
+			draw(this.cx,this.cy,this.r,this.c);
+			if(this.cx == this.sx && this.cy == this.sy)
+				this.type = 0;
+			if(this.cx == this.x && this.cy == this.y){
+				this.type = 1;
+				this.isActive = 0;
+				this.sx = 0;
+				this.sy = 0;
+			}
+
+		}
+		Point.prototype.offset = function(current,target){
+			if(current == target) return 0;
+			if(current>target)
+				return -1;
+			else
+				return 1;	 
+		}
+		
+		function paint(){
+			cxt.clearRect(0,0,cvs.width,cvs.height);//清除画布
+			// 主循环
+			for (var i = 0; i < imageObj.height*4;i=i+span) {
+				for (var j = 0; j < imageObj.width*4; j=j+span*2) {
+					var t = i*imageObj.width*4 +j;
+					if((imageData[t] || imageData[t+1] || imageData[t+2]) && imageData[t+3]){
+							var c =setColor();
+								cxt.fillStyle = c;
+								cxt.strokeStyle = c;
+								var r = getRadius();
+							recorder(j/4,i,r,c);	//记录数据
+							draw(j/4,i,r,c);//draw a circle
+					} 
+				
+				};
+			};
+		}
+		function offset(x1,x2){
+			 if(x1-x2 >0){
+			 	return -5;
+			 }else{
+			 	return 5;
+			 }
+		}
+		paint();
+		function repaint(data){
+			//判断是否存在激发态电子，如果存在，则将基态-》激发态
+			cxt.clearRect(0,0,cvs.width,cvs.height);//清除画布
+			// 主循环
+			for (var item in data) {
+				var p = data[item]
+				if(p.isActive){//此电子处于激发态
+					p.animate();
+				}else{
+					draw(p.x,p.y,p.r,p.c);
+				}
+			};
+		}
+		function recorder(x,y,radius,color){
+  			data[x+","+y]=new Point(x,y,radius,color);
+		}
+		function draw(x,y,radius,color){
+			cxt.fillStyle = color;
+			cxt.strokeStyle = color;
+			cxt.beginPath();
+			cxt.arc(x,y,radius,0,2*Math.PI,true);
+			cxt.stroke();
+			cxt.fill();
+		}
+		function Peng(x,y,radius){//判断是否碰撞
+			for (var i = x-18 ; i <x+18 ; i++) { //x泛型
+				for (var j = y-18 ; j <y+18 ; j++) {//y方向
+					if( (i+","+j) in data){//激发态
+						var point = data[i+","+j];
+						if(point.isActive) continue;
+						animateTo(point,x,y);
+					}
+				};
+			};
+		}
+		function direction(i,j,x,y){//方向
+			if((i>=x)&&(j>=y)){
+				return "up";
+			}
+			if((i<=x)&&(j<=y)){
+				return "down";
+			}
+			if((i<=x)&&(j>=y)){
+				return "left";
+			}
+			if((i>=x)&&(j<=y)){
+				return "right";
+			}
+		}
+		function animateTo(p,i,j){
+			p.isActive = 1;			
+			console.log(i,j,p.x,p.y);
+			var direct = direction(i,j,p.x,p.y);//判断方向
+			var m,n;
+			switch(direct){
+				case 'up':
+					 n = Math.floor(j - Math.random()*60+20);
+					 m =Math.floor(i - (Math.random()*30-20));
+					 break;
+				case 'down':
+					 n = Math.floor(j + Math.random()*60+20);
+					 m =Math.floor(i + (Math.random()*30-20));
+					 break;
+				case 'left':
+					 m =Math.floor(i - Math.random()*60+20);
+					 n =Math.floor(j- (Math.random()*30-20));
+					 break;	 
+				case 'right':
+					 m =Math.floor( i + Math.random()*60+20);
+					 n =Math.floor(j + (Math.random()*30-20));
+					 break;	 	 
+			}
+			console.log(p);
+			p.setTarget(m,n);
+		}
+
+		setInterval(function(){
+		    	repaint(data);
+			},20);
+
+		cvs.addEventListener('mousemove',function(ev){
+			de.innerHTML="x:"+ev.x+"<br>y:"+ev.y;
+			Peng(ev.x,ev.y);
+		},false);
+		
+
+	</script>
+</html>
