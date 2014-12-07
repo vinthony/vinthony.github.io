@@ -9,7 +9,6 @@ window.onload=function(){
 				drawListener=setInterval(drawCanvas,150);
 			}
 
-			dwadwa
 
 function $(id){
 	return document.getElementById(id);
