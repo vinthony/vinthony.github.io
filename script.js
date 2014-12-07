@@ -8,6 +8,7 @@ window.onload=function(){
 				Animate.trigger(document.querySelectorAll("li"),{"borderBottom":"1px solid"});
 				drawListener=setInterval(drawCanvas,150);
 			}
+			// 
 
 function $(id){
 	return document.getElementById(id);
