@@ -1,0 +1,82 @@
+<!DOCTYPE html>	
+<html>
+	<head>
+		<title>thanks</title>
+		<meta charset='utf8'>
+		<style>
+			*{
+				margin: 0;
+				padding: 0;
+			}
+			canvas{
+				display: block;
+			}
+			video{
+				display: none;
+			}
+		</style>
+	</head>
+
+	<body>
+		<video width="320" height="240" controls autoplay >
+			<source src="http://vinthony.u.qiniudn.com/up.mp4" type="video/mp4">
+		</video>
+		<div id='debuggerer'></div>
+		<canvas id='cvs' width="320" height = "240" >
+			
+		</canvas>
+	</body>
+	<script>
+		var v = document.querySelector('video');
+		var imageObj = null;
+		var span = 20;
+		var cvs = document.querySelector('#cvs');
+			cxt=cvs.getContext('2d');
+			v.addEventListener('play',function() {
+				var i=window.setInterval(function(){
+					cxt.drawImage(v,0,0,v.width,v.height);
+					repaint();
+				},15);
+			},false);
+			function repaint(){
+				imageObj = cxt.getImageData(0,0,cvs.width,cvs.height);
+				cxt.clearRect(0,0,cvs.width,cvs.height);//清除画布
+				for (var i = 0; i < imageObj.height*4;i=i+5) {//高
+					for (var j = 0; j < imageObj.width*4; j=j+span) {//宽
+						var t = i*imageObj.width*4 +j;
+							draw(j/4,i,1,makeColor(t));//draw a circle
+					};
+				};
+			}
+			function hasPx(t){
+				var data = imageObj.data;
+				if((inRange(t,0,255)||inRange(t+1,0,255)||inRange(t+2,10,230))&&inRange(t+3,10,230)){
+					return true;
+				}
+				return false;
+			}
+			function inRange(item,small,big){
+				return item > small && item < big ;
+			}
+			function makeColor(t){
+				var data = imageObj.data;
+				var r= data[t];
+				var g = data[t+1];
+				var b = data[t+2];
+				var a = data[t+3];
+				if(r>200&&g>200&b>200)
+					return "flag";
+				return "rgba("+r+","+g+","+b+","+a+")";
+			}
+			function draw(x,y,radius,color){
+				if(color =="flag") return;
+				cxt.fillStyle = color;
+				cxt.strokeStyle = color;
+				cxt.beginPath();
+				cxt.arc(x,y,radius,0,2*Math.PI,true);
+				cxt.closePath();
+				cxt.stroke();
+				cxt.fill();
+			}
+	</script>
+</html>
