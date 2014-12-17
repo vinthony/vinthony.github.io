@@ -19,7 +19,7 @@
 
 	<body>
 		<video width="320" height="240" controls autoplay >
-			<source src="http://vinthony.u.qiniudn.com/up.mp4" type="video/mp4">
+			<source src="test.mp4" type="video/mp4">
 		</video>
 		<div id='debuggerer'></div>
 		<canvas id='cvs' width="320" height = "240" >
@@ -32,6 +32,7 @@
 		var span = 20;
 		var cvs = document.querySelector('#cvs');
 			cxt=cvs.getContext('2d');
+			v.crossOrigin = '';
 			v.addEventListener('play',function() {
 				var i=window.setInterval(function(){
 					cxt.drawImage(v,0,0,v.width,v.height);
