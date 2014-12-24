@@ -1,0 +1,331 @@
+<html>
+	<head>
+		<title>thanks</title>
+		<meta charset='utf8'>
+		<style>
+			*{
+				margin: 0;
+				padding: 0;
+			}
+		 	#main{
+		 		background-color: #eee;
+		 		/*border:1px solid #000;*/
+		 	}
+		 	#debuggerer{
+		 		display: none;
+		 		color: #fff;
+		 		bottom: 0;
+		 		position: fixed;
+		 		width: 300px;
+		 		height: 200px;
+		 		background: rgba(30,30,30,0.3);
+		 	}
+		 	@font-face {font-family: 'iconfont';
+			    src: url('iconfont.eot'); /* IE9*/
+			    src: url('iconfont.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+			    url('iconfont.woff') format('woff'), /* chrome、firefox */
+			    url('iconfont.ttf') format('truetype'), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
+			    url('iconfont.svg#uxiconfont') format('svg'); /* iOS 4.1- */
+			}
+			.iconfont{
+					color:#fff;
+					position: absolute;
+				    font-family:"iconfont" !important;
+				    font-size:16px;font-style:normal;
+				    -webkit-font-smoothing: antialiased;
+				    -webkit-text-stroke-width: 0.2px;
+				    -moz-osx-font-smoothing: grayscale;
+				}
+			#imger{
+				display: none;
+			}
+			#fontzone{
+				position: absolute;
+				left: 400px;
+				top: 500px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<img id="imger" src="tree-small.jpg" />
+		<div id='debuggerer'></div>
+		<!-- <div id='fontzone'>
+			<img src="xmas.png" alt="">
+		</div> -->
+		<canvas id='main'  width="1450" height="750" >
+			
+		</canvas>
+	</body>
+	<script>
+	// 每次下雪的数量
+		var snowNum = 10;
+		var clientWidth = document.body.clientWidth;
+		var clientHeight = document.body.clientHeight;
+		var img = document.querySelector('#imger');
+		var cvs = document.querySelector('#main');
+		var de = document.querySelector("#debuggerer");
+		var cxt = cvs.getContext('2d');
+		var hello = "Merry";
+		var originData = {};
+		// 创建渐变
+		var gradient=cxt.createLinearGradient(0,0,cvs.width,0);
+			gradient.addColorStop("0","magenta");
+			gradient.addColorStop("0.5","blue");
+			gradient.addColorStop("1.0","red");
+		var span = 15;//最大边缘
+		var textX = 0;//起始X
+		var textBaselineY = 400;//起始y
+		var data = {};
+		var imageX = 10;
+		var imageY = 10;
+		var imageW = 452;
+		var imageH = 604;
+		var imageObj = null;
+		var imageData = null;
+		// 规定半径区间
+		// 3~10px
+		cxt.font = " 900 300px monospace";
+		cxt.fillStyle = gradient;
+		img.onload = function(){
+			cxt.drawImage(img,imageX,imageY);
+			imageObj= cxt.getImageData(imageX,imageY,imageW+50,imageH+50);
+			imageData = imageObj.data;
+			paint();
+		}
+		//cxt.fillText(hello,textX,textBaselineY);
+		//cxt.fillText(" Xmas",textX,textBaselineY+300);
+		// var shortcut = Math.ceil(cxt.measureText(hello).width); //字内容宽度
+		function getRadius(){//圆的半径
+			//return 5;
+			return Math.floor(Math.random()*5+2);
+		}
+		function setColor(){//随机颜色
+			var colors = ["#1ABC9C","#16A085","#2ECC71","#27AE60","#3498DB","#2980B9","#9B59B6","#8E44AD","#34495E","#2C3E50","#F1C40F","#F39C12","#E67E22","#D35400","#E74C3C","#C0392B","#7F8C8D","#95A5A6"];
+			var r = Math.floor(Math.random()*colors.length);
+			return colors[r];
+		}
+
+		function Point(x,y,r,c){
+			this.x = x;
+			this.y = y;
+			this.r = r;
+			this.c = c;
+			this.sx = 0;
+			this.sy = 0;
+			this.cx = x;
+			this.cy = y;
+			this.type = 1;//1为扩散，0为收缩
+			this.isActive = 0;
+		}
+		Point.prototype.setTarget = function(x,y){
+			this.sx = x;
+			this.sy = y;
+		}
+		Point.prototype.animate = function(){
+			if(this.type){//扩散过程
+				this.cx += this.offset(this.cx,this.sx);
+				this.cy += this.offset(this.cy,this.sy);
+			}else{
+				this.cx += this.offset(this.cx,this.x);
+				this.cy += this.offset(this.cy,this.y);
+			}
+			draw(this.cx,this.cy,this.r,this.c);
+			if(this.cx == this.sx && this.cy == this.sy)
+				this.type = 0;
+			if(this.cx == this.x && this.cy == this.y){
+				this.type = 1;
+				this.isActive = 0;
+				this.sx = 0;
+				this.sy = 0;
+			}
+
+		}
+		Point.prototype.offset = function(current,target){
+			if(current == target) return 0;
+			if(current>target)
+				return -1;
+			else
+				return 1;	 
+		}
+		var count = 0;
+		function paint(){
+			//console.log(imageData);
+			cxt.clearRect(0,0,cvs.width,cvs.height);//清除画布
+			// 主循环
+			for (var i = 0; i < imageObj.height*4;i=i+span) {//高
+				for (var j = 0; j < imageObj.width*4; j=j+span*3) {//宽
+					var t = i*imageObj.width*4 +j;
+					if(hasPx(t)){
+						count++;
+						var c =setColor();
+							cxt.fillStyle = c;
+							cxt.strokeStyle = c;
+							var r = getRadius();
+						recorder(Math.floor(450+j/4),i,r,c);	//记录数据
+						draw(Math.floor(450+j/4),i,r,c);//draw a circle
+					} 
+				
+				};
+			};
+		}
+		function hasPx(t){
+			//r g b a 
+			if((imageData[t] !=255 || imageData[t+1] !=255 || imageData[t+2] !=255)&&imageData[t+3]>10)
+				return true;
+			return false;
+		}
+		function offset(x1,x2){
+			 if(x1-x2 >0){
+			 	return -5;
+			 }else{
+			 	return 5;
+			 }
+		}
+		function repaint(data){
+			//判断是否存在激发态电子，如果存在，则将基态-》激发态
+			cxt.clearRect(0,0,cvs.width,cvs.height);//清除画布
+			// 主循环
+			for (var item in data) {
+				var p = data[item]
+				if(p.isActive){//此电子处于激发态
+					p.animate();
+				}else{
+					draw(p.x,p.y,p.r,p.c);
+				}
+			};
+		}
+		function recorder(x,y,radius,color){
+  			data[x+","+y]=new Point(x,y,radius,color);
+		}
+		function draw(x,y,radius,color){
+			cxt.fillStyle = color;
+			cxt.strokeStyle = color;
+			cxt.beginPath();
+			cxt.arc(x,y,radius,0,2*Math.PI,true);
+			cxt.closePath();
+			cxt.stroke();
+			cxt.fill();
+		}
+		
+ 		
+ 		var SnowCollection = [];
+ 		//create random snow list
+ 		function ran(){
+ 			return Math.ceil(Math.random()*clientWidth+10);
+ 		}
+ 		function snowRate(s,r){
+ 			return Math.ceil(Math.random()*r+s);
+ 		}
+	    function Snow(top,left){
+	    	this.top = top;
+	    	this.id = ""
+	    	this.stop = false;
+	    	this.snowRate = snowRate(0.3,1);
+	    	var s = document.createElement("i"); 
+		    	s.className = "iconfont";
+		    	s.innerHTML = "&#xe604;";
+		    	s.style.left = left;
+		    	s.style.fontSize = snowRate(14,20); 
+		    	s.style.top = top;
+		    	s.id = new Date().valueOf()-left;
+	    	document.body.appendChild(s);
+	    	this.element = document.getElementById(s.id);
+	    	this.updatePosition();
+	    }
+	    Snow.prototype.isShow = function(){
+	    	if(this.top > clientHeight){
+	    		this.element.remove();
+	    		this.stop = true;
+	    		return false;	
+	    	} 
+	    	return true;
+	    }
+	    Snow.prototype.updatePosition = function(){
+	    	if(!this.isShow()) return;
+	    	this.top += this.snowRate;
+	    	this.element.style.top = this.top+"px";
+	    }
+	    Snow.prototype.isStop = function(){
+	    	return this.stop;
+	    }
+	    function initSnow(){
+	    	for (var i = 0; i <= snowNum ; i++) {
+	    		SnowCollection.push(new Snow(-100,ran()));
+	    	};
+	    }
+	    function paintSnow(){
+	    	SnowCollection.forEach(function(value,index,arr){
+	    		if(arr[index]!=null)
+		    		if(!arr[index].isStop())
+		    			arr[index].updatePosition();
+		    		else
+		    			arr[index] = null;
+	    	});
+	    }
+/************************************************************/	    
+	    setInterval(function(){
+	    	//initSnow();
+	    },1000);
+		setInterval(function(){
+		    repaint(data);
+		  //	paintSnow();
+		},20);
+
+		cvs.addEventListener('mousemove',function(ev){
+			setTimeout(function(){},100);
+			//de.innerHTML="x:"+ev.x+"<br>y:"+ev.y;
+			// console.log(ev);
+			Peng(ev.x,ev.y);
+			//向内部
+		},false);
+/************************************************************/	    
+
+
+		function Peng(x,y,radius){//判断是否碰撞
+			var radio = 100;
+			for (var i = x-radio ; i < x+radio ; i=i+0.25) { //x方向
+				for (var j = y-radio ; j < y+radio ; j++) {//y方向
+					if( (i+","+j) in data){//激发态
+					//	console.log(i,j);
+						var point = data[i+","+j];
+						if(point.isActive) continue;
+						animateTo(point,x,y);
+					}
+				};
+			};
+		}
+		function direction(i,j,x,y){//方向
+			//i j 为鼠标方向 x y 为点的方向
+			if((i>=x)&&(j>=y)){
+				return "";
+			}
+			if((i<=x)&&(j<=y)){
+				return "up";
+			}
+			if((i<=x)&&(j>=y)){
+				return "right";
+			}
+			if((i>=x)&&(j<=y)){
+				return "left";
+			}
+		}
+		function animateTo(p,i,j){
+			p.isActive = 1;			
+			var direct = direction(i,j,p.x,p.y);//判断方向
+			var m,n;
+			if(i<=p.x){
+				m = Math.floor(p.x + (Math.random()*80-15));
+			}else{
+				m = Math.floor(p.x - (Math.random()*80-15));
+			}
+			if(j <= p.y){
+				n = Math.floor(p.y + (Math.random()*80-15)); 
+			}else{
+				n = Math.floor(p.y - (Math.random()*80-15));
+			}
+			p.setTarget(m,n);
+		}
+
+	</script>
+</html>
