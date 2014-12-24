@@ -2,6 +2,8 @@
 	<head>
 		<title>thanks</title>
 		<meta charset='utf8'>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 		<style>
 			*{
 				margin: 0;
@@ -264,14 +266,14 @@
 	    	});
 	    }
 /************************************************************/	    
-	    setInterval(function(){
-	    	//initSnow();
-	    },1000);
+	   
 		setInterval(function(){
 		    repaint(data);
-		  //	paintSnow();
 		},20);
-
+		document.addEventListener('touchmove',function(ev){
+			ev.preventDefault();
+			ev.stopPropagation();
+		});
 		cvs.addEventListener('mousemove',function(ev){
 			setTimeout(function(){},100);
 			//de.innerHTML="x:"+ev.x+"<br>y:"+ev.y;
@@ -283,11 +285,11 @@
 
 
 		function Peng(x,y,radius){//判断是否碰撞
-			var radio = 100;
-			for (var i = x-radio ; i < x+radio ; i=i+0.25) { //x方向
-				for (var j = y-radio ; j < y+radio ; j++) {//y方向
+			var radioX = 7;
+			var radioY = 28;
+			for (var i = x-radioX ; i < x+radioX ; i=i+0.25) { //x方向
+				for (var j = y-radioY ; j < y+radioY ; j++) {//y方向
 					if( (i+","+j) in data){//激发态
-					//	console.log(i,j);
 						var point = data[i+","+j];
 						if(point.isActive) continue;
 						animateTo(point,x,y);
