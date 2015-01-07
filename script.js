@@ -3,9 +3,9 @@ var Animate={};
 var drawListener=null;
 window.onload=function(){
 				initPage();
-				Weight.Clock($("clock"));
+				//Weight.Clock($("clock"));
 				Weight.ipodCtrl($("ipod"));
-				Animate.trigger(document.querySelectorAll("li"),{"borderBottom":"1px solid"});
+				//Animate.trigger(document.querySelectorAll("li"),{"borderBottom":"1px solid"});
 				drawListener=setInterval(drawCanvas,150);
 			}
 
