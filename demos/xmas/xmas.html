@@ -275,7 +275,7 @@
 			ev.stopPropagation();
 		});
 		cvs.addEventListener('mousemove',function(ev){
-			setTimeout(function(){},100);
+			//setTimeout(function(){},100);
 			//de.innerHTML="x:"+ev.x+"<br>y:"+ev.y;
 			// console.log(ev);
 			Peng(ev.x,ev.y);
@@ -285,8 +285,8 @@
 
 
 		function Peng(x,y,radius){//判断是否碰撞
-			var radioX = 7;
-			var radioY = 28;
+			var radioX =60;
+			var radioY = radioX*4;
 			for (var i = x-radioX ; i < x+radioX ; i=i+0.25) { //x方向
 				for (var j = y-radioY ; j < y+radioY ; j++) {//y方向
 					if( (i+","+j) in data){//激发态
@@ -317,14 +317,14 @@
 			var direct = direction(i,j,p.x,p.y);//判断方向
 			var m,n;
 			if(i<=p.x){
-				m = Math.floor(p.x + (Math.random()*80-15));
+				m = Math.floor(p.x + (Math.random()*80-10));
 			}else{
-				m = Math.floor(p.x - (Math.random()*80-15));
+				m = Math.floor(p.x - (Math.random()*80-10));
 			}
 			if(j <= p.y){
-				n = Math.floor(p.y + (Math.random()*80-15)); 
+				n = Math.floor(p.y + (Math.random()*80-10)); 
 			}else{
-				n = Math.floor(p.y - (Math.random()*80-15));
+				n = Math.floor(p.y - (Math.random()*80-10));
 			}
 			p.setTarget(m,n);
 		}
