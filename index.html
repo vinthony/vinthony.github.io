@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 	<html>
 	<head>
-		<title>welcome to the vinthony‘s page</title>
+		<title>寸晓东不是万能的</title>
 		<meta charset='utf-8'>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/> 
 		<style type="text/css">
 			html,body{
 				margin: 0;
@@ -53,7 +54,7 @@
 			}
 			.wechat{
 				opacity: 0.6;
-				font-size: 40px;
+				font-size: 35px;
 			}
 			.wechat:hover{
 				color:#348903;
@@ -78,7 +79,7 @@
 				color: #E6162D;
 			}
 			#ipod{
-				position: absolute;
+				position: fixed;
 				cursor: pointer;
 				left: -100px;
 				top: -100px;
@@ -131,16 +132,18 @@
 		</style>
 	</head>
 	<body>
-		<canvas id='cvs'></canvas>
-		<div id='ipod'>
-			<div class='ipod-small-circle circle hv-middle'>
-				<div class='ipod-inner-point circle hv-middle'></div>
-			</div>
-			<audio  src='music.mp3'  loop autoplay autoplay></audio>
-	    </div>		
+		<div id='ipod-wrap'>
+			<canvas id='cvs'></canvas>
+			<div id='ipod'>
+				<div class='ipod-small-circle circle hv-middle'>
+					<div class='ipod-inner-point circle hv-middle'></div>
+				</div>
+				<audio  src='music.mp3'  loop autoplay autoplay></audio>
+		    </div>
+		</div>		
 		<div class='container'>
 			<img class='title-img' src="title.png">
-			<ul>
+			<ul class='wrap-ul'>
 				<li><a class='weibo' href="http://weibo.com/vinthony">Weibo</a></li>
 				<li><a class='github' href="http://github.com/vinthony">Github</a></li>
 				<li><a class='resume' href="#">Resume</a></li>
@@ -149,5 +152,16 @@
 			</ul>
 		</div>
 		<script type="text/javascript" src='script.js'></script>
+		<script>
+			function isPhone(){
+				var ua = window.navigator.userAgent;
+				return ua.indexOf("Mobile") > 0; 
+			}
+			if(isPhone()){
+				document.querySelector('#ipod-wrap').style.display="none";
+				document.querySelector('.title-img').style.left = "20px";
+				document.querySelector('.wrap-ul').style.left = "60px";
+			}
+		</script>
 	</body>
 	</html>
