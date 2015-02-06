@@ -1,11 +1,5 @@
 vinthony.github.io
 ==================
 
-dwaijdw
-
-dwadwadwadwadaw
-dwadawdwa
-
-
-dwadawda
-
+* [主页](http://vinthony.me)
+* [我的博客](https://github.com/vinthony/vinthony.github.io/issues)
