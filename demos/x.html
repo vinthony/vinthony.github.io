@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset='utf-8'>		
+	<title>about X</title>
+	<style type="text/css">
+		.container{
+			display: block;
+			width: 960px;
+			height: 100px;
+			border-radius: 10px;
+			background-color: #FFDB09;
+			margin: 20px auto;
+			position: relative;
+		}
+		.humburger{
+			position: relative;
+			display: block;
+			width: 30px;
+			height: 2px;
+			background-color:#fff;
+		}
+		.humburger-container{
+			cursor: pointer;
+			position: absolute;
+			top:40px;
+			left: 50px;
+			width: 30px;
+			height: 30px;
+			float: left;
+		}
+		.style1-top{
+			transition-duration:0.5s;
+			top:5px;
+		}
+		.style1-mid{
+			transition-duration:0.5s;
+			top:12px;
+		}
+		.style1-btm{
+			transition-duration:0.5s;
+			top:20px;
+		}
+		.active .humburger{
+			transition-duration:0.5s;
+			top:10px;
+		}
+		.active .style1-top{
+			transition-duration: 0.5s;
+			transform:rotate(45deg) ;
+			transform:scale(1.2 0.8);
+		}
+		.active .style1-mid{
+			transition-duration: 0.5s;
+			opacity: 0;
+		}
+		.active .style1-btm{
+			transition-duration: 0.5s;
+			transform:rotate(-45deg);
+			transform:scale(1.2 0.8);
+		}
+		.word{
+			position: absolute;
+			top: 50px;
+			left: 120px;
+			color: #fff;
+		}
+	</style>
+</head>
+<body>
+	<div class='container'>
+		<div class='humburger-container'>
+			<div class='humburger style1-top'></div>
+			<div class='humburger style1-mid'></div>
+			<div class='humburger style1-btm'></div>
+		</div>
+		<div class='word'>如果你没勇气陪我到
+明天的 明天的 明天
+倒不如 就算了 就放了</div>
+	</div>
+	<script type="text/javascript">
+		function $(ele){
+			return document.querySelectorAll(ele);
+		}	
+		var hums = $('.humburger-container');
+		hums[0].addEventListener('click',function(){
+			trans();
+		},false);
+		function trans(){
+  			var clsName = $('.humburger-container')[0].className
+			if(clsName.indexOf('active')<0){
+				$('.humburger-container')[0].className +=" active";
+			}else{
+				$('.humburger-container')[0].className = "humburger-container";
+			}
+		}
+	</script>
+</body>
+</html>
