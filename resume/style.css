@@ -1,0 +1,62 @@
+body{padding: 0;margin:0;background-color: #44475a;color: #f8f8f2}
+@font-face{
+	font-family: main;
+	src:url(DIN.otf);
+}
+.container{
+	padding:30px 50px;
+	background-color:#282a36;
+	width: 960px;
+	margin:0 auto;
+}
+@font-face{
+	font-family: title;
+	src:url(Bariol.otf);
+}
+ul,li{
+	font-size: 24px;
+	font-family: main;
+	list-style: none;
+}
+.basic li{
+	line-height: 45px;
+}
+h1,h2,h3,h4,h5,h6{
+	color: #ff79c6;
+	font-weight: bolder;
+	font-family: title;
+}
+h1{
+	font-size: 48px;
+}
+h3{
+	font-size: 36px;
+}
+h5{
+	font-size: 32px;
+}
+a{
+	text-decoration: none;
+	color:#ffb86c;
+}
+a:hover{
+	transition:color 0.5s;
+	color:#f1fa8c;
+}
+.tag>span{
+	line-height: 20px;
+	font-size: 14px;
+	background-color: #6272a4;
+	display: inline-block;
+	padding: 3px 6px;
+	margin:0 4px;
+	border-radius: 3px;
+}
+.info-item>span{
+	width: 400px;
+	display: inline-block;
+	text-align: justify;
+}
+.info-item>span:first-child{
+	padding-left: 100px;
+}

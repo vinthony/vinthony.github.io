@@ -1,371 +1,74 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf8">
-		<title>个人简历</title>
-	<style>
-			@page {
-				margin:0;
-				size:portrait; 
-			}
-			.k{
-				font-family: verdana;
-			}	
-			.content{
-				font-family: helvetica;	
-			}
-		*{
-			color: #789497;
-			font-size: 16px;
-			margin: 0;
-			padding: 0;
-			font-family: Monaco;
-		}
-		ul,li{
-			list-style: none;
-		}
-		a{
-			text-decoration:none;
-		}
-		body{
-			/*background-color: #E5E2DF;*/
-			display: block;
-			width: 1060px;
-			box-shadow: 0 0 1em #ddd;
-			margin: 0 auto;
-		}
-		h2{
-			color: rgb(3,101,100);
-			text-align:center;	
-			font-size:36px;	
-			padding: 20px 0;
-		}
-		ul>li{
-			margin:10px;
-			margin-left: 30px;
-		}
-		ol>li{
-			margin:5px;
-			margin-left: 40px;
-		}
-		h3>small{
-			padding: 0 5px;
-			font-size: 0.8em;
-			color: #aaa;
-		}
-		.title,.personal,.other,.project,.it{
-			margin: 26px auto;
-			font-size:26px;
-		}
-		.title{
-			width:100%;
-			height:100px;
-			margin:50px auto;
-		}
-		.personal{
-			width:960px; 
-		    height:280px;
-		}
-		.project{
-			width:960px;
-		    height:400px;
-		}
-		.it{
-			width:960px;
-		    height:233px;
+<head>
+	<meta charset='utf-8'>
+	<title>A resume about me @vinthony</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
 
-		}
-	   .other{
-	   		width:960px;
-		    height:480px;
-	   }
-		.headCtrl{
-			color: rgb(3,101,100);
-			font-size: 22px;
-				border-bottom:1px solid rgb(3,101,100);
-				padding-bottom:10px;
-			margin:27px;
-		}
-		.left,.right{
-			width:460px;	
-			display:inline-block;
-		}
-		.left,.wrapProject{
-			margin-left:20px;
-		}
-		.wrapProject{
-			margin-left:20px;
-		}
-		.table{
-			text-align: center;
-			width: 80%;
-			margin-left: 25px;			
-			line-height: 3em;
-		}
-		.biaozhi{
-			text-align: right;
-		}
-		.nameLine{
-			text-align: left;
-		}
-		.smallTitle{
-			padding-left: 27px;
-		}
-		h3{
-			color: rgb(3,101,100);
-			font-size: 20px;
-		}
-		.time{
-			width: 500px;
-			color: rgb(3,101,100);
-		}
-		.detail{
-			font-size: 16px;
-			padding-left: 66px;
-		}
-		.itemOne{
-			margin: 15px 0;
-		}
-		.de{
-			position: absolute;
-			display: block;
-			top:69px;
-			font-size: 18px;
-			font-weight: bolder;
-			width: 300px;
-			/*-webkit-transform:rotate(-25deg);*/
-		}
-		.footer{
-			position: relative;
-			width: 100%;
-			height: 0px;
-			border: 1px solid rgb(3,101,100);
-		}
-		.circle{
-			top:-12.5px;
-			left: 0;
-			right: 0;
-			position: absolute;
-			margin: 0 auto;
-			width: 25px;
-			height: 25px;
-			border-radius: 25px;
-			background-color: rgb(3,101,100);
-			vertical-align: center;
-		}
-		#footer{
-			
-			position: relative;
-			top:20px;
-			left: 521px;	
-		}
-		#footer2{
-			background-color: rgb(18,53,85);
-			
-			position: relative;
-			width:20px;
-			left: 500px;
-		}
-		.circleDetail{
-			top: 0px;
-			bottom: 0px;
-			left: 0;
-			right: 0;
-			margin: auto;
-			display: inline-block;
-			position: absolute;
-			width: 80px;
-			height: 80px;
-			border-radius: 50px;
-		}
-		.circleDetail span{
-			color: #E5E2DF;
-			position: absolute;
-			top:0;
-			bottom: 0;
-			width: 2.2em;
-			height: 1.4em;
-			margin: auto;
-			left: 0;
-			right: 0;
-		}
-		.tri-80{
-			position: absolute;
-			top:0;
-			left: 50%;
-			width: 0;
-			height: 0;
-			border-bottom: 70px solid rgb(227,230,195);
-			border-left: 70px solid transparent;
-		}
-		.tri-60{
-			position: absolute;
-			top:0;
-			left: 50%;
-			width: 65px;
-			height: 65px;
-			background-color: rgb(227,230,195);
-		}
-		.tri-over{
-			position: absolute;
-			top:50%;
-			left: 50%;
-			width: 0;
-			height: 0;
-			border-top: 90px solid rgb(227,230,195);
-			border-right: 90px solid transparent;
-			border-left: 45px solid transparent;
-		}
-		.tri-20{
-			position: absolute;
-			top: 0;
-			left: 50%;
-			width: 50%;
-			height: 100%;
-			background-color: rgb(227,230,195)
-		}
-		.wrapcircle{
-			overflow: hidden;
-			background-color: rgb(230,180,80);				
-			position: absolute;
-			width: 120px;
-			height: 120px;
-			border-radius: 60px;
-		}
-		.tri-sm{
-			position: absolute;
-			width:0;
-			height: 0;
-			top: 50%;
-			border-bottom: 65px solid rgb(227,230,195);
-			border-left: 65px solid transparent;
-		}
-		.ite{
-			position: absolute;
-			top:150px;
-			padding-left: 26px;
-			color: #aaa;
-		}
-		.circleTo{
-			vertical-align: middle;
-			display: inline-block;
-			width: 24px;
-			height: 24px;
-			background-color: rgb(217,116,43);
-			border-radius: 24px;
-			margin: 0 20px;
-		}
-		.wrapProject ul>li{
-			line-height: 50px;
-		}
-		.item-time{
-			display: inline-block;
-			width: 150px;
-		}
-	</style>	
-	</head>
-	<body>
-		<div class='title'>
-		<h2 class='titlefont'>个人简历</h2>
-		<div  class='footer'><div class='circle'></div></div>
-		</div>
 
-		<div class='personal'>
-			<p class='titlefont headCtrl'>■  个人简介</p>
-			<div class='left en'>
-				<ul style='line-height:2em'>	
-				<li ><img src='my.png' style='vertical-align:middle'><span>寸晓东</span></li>
-				<li><img src="4.png" style="vertical-align:middle;height:55px;margin-left:15px;margin-right:12px">西安电子科技大学</li>
-				<li><img src='com.png'style='vertical-align:middle;width:70px;'>计算机科学与技术</li>
+<body>
+<div class='container'>
+<header>
+	<h1 align='center'>Resume Online</h1>
+</header>
+<section>
+	<h3>Basic Information</h3>
+	<ul class='basic'>
+		<li class='info-item'><span>Name</span><span>Shadow Cun ( Cun Xiaodong ) </span></li>
+		<li class='info-item'><span>Location</span><span>Xi'an Shaanxi China</span></li>
+		<li class='info-item'><span>University</span><span>Xidian University</span></li>
+		<li class='info-item'><span>Subject</span><span>Computer Science and Technology</span></li>
+		<li class='info-item'><span>Github</span><span><a href="http://github.com/vinthony">vinthony</a></span></li>
+		<li class='info-item'><span>Phone</span><span>15802902924</span></li>
+		<li class='info-item'><span>Email</span><span><a href="mailto:vinthony@gmail.com?subject='from resume'">vinthony@gmail.com</a>
+		</span></li>
+	</ul>
+</section>
+<section>
+		<h3>Project : : OpenSource</h3>
+			<ul>
+				<li>
+					<a href="https://github.com/vinthony/node-avatar-generator">node-avatar-generator</a>
+					<p>A npm package to generator random avatar</p>
+					<p class='tag'><span>Node.js</span><span>HTTP</span><span>Unit test</span></p>
+				</li>
+				<li>
+					<a href="https://github.com/vinthony/SimpleHoop">SimpleHoop</a>
+					<p>A android app and api server to fetch the news and bbs from hoopchina.com</p>
+					<p class='tag'><span>PHP</span><span>Android</span><span>Java</span><span>HTTP</span></p>
+				</li>
+				<li>
+					<a href="https://github.com/vinthony/racpider">Racpider</a>
+					<p>A Distributed Web Spider framework base on python Redis and Mongodb</p>
+					<p class='tag'><span>python</span><span>Redis</span><span>MongoDB</span><span>HTTP</span></p>
+				</li>
 			</ul>
-			</div >
-			<div class='right'>
-				<ul>
-					<li><img src='phone.png' style='vertical-align:middle;margin-left:12px;margin-right:6px'><span class='en'>15802902924</span></li>
-					<li><img src="mail.png" style='vertical-align:middle;width:60px;margin-left:6px;margin-right:2px'><span class='en'>vinthony@gmail.com</span></li>
-					<li><img src="git.png" style="width:50px;vertical-align:middle;margin-left:10px;margin-right:7px"><span class='en'>github.com/vinthony</span></li>
-				</ul>	
-			</div>	
-		</div>
-		<div class='project'>
-		<p class='titlefont headCtrl'>■  项目经验</p>	
-			<div class='wrapProject en'style='line-height:1.5em'>
-				<div class='itemOne'>
-					<div class='itemOne'>
-					<h3 class='smallTitle'>「阿里巴巴-淘宝电影-实习」<small>movie.taobao.com</small></h3>
-					<p class='detail'>简介: 参与淘宝电影PC端改版，参与手机淘宝电影的迭代</p>
-					<p class='detail'>负责: 利用kissy-mini完成部分前端工作</p>
-				</div>
-					<h3 class='smallTitle'>「桌游精灵」<small>webApp</small></h3>
-					<p class='detail'>简介: 桌游相关的WebApp,涵盖桌游各个流行版本</p>
-					<p class='detail'>负责: html5和angular.js部分的功能实现,ios/Android 原型已经上线</p>
-				</div>
-				<div class='itemOne'>
-					<h3 class='smallTitle'>「锦歌汉服分享网站」<small>www.jinge234.com</small></h3>
-					<p class='detail'>简介: 申请到的2013年国家大学生创业计划项目</p>
-					<p class='detail'>负责: 总体规划,部分JS交互和后台开发</p>
-				</div>
-				<div class='itemOne'>	
-					<h3 class='smallTitle'>「Hupo」<small>Android</small></h3>
-					<p class='detail'>简介: 虎扑体育第三方Android客户端</p>
-					<p class='detail'>负责: 服务器端界面抓取,解析(PHP),Android客户端</p>
-				</div>
-				
-				
-			</div>
-		</div>
-		<div class='it'>
-		<p class='titlefont headCtrl'>■  专业技能</p>
-			<div class='wrapProject'style='line-height:1.5em;position:relative'>
-				<div class='wrapcircle' style="left:25px;">
-					<div class='tri-80'>
-					</div>
-					<div class='circleDetail' style="background-color:rgb(217,116,43)"><span>HTML</span></div>	
-				</div>
-				<div class='wrapcircle' style="left:210px;background-color:rgb(178,200,187)">
-						<div class='tri-80'>
-					</div>
-					<div class='circleDetail' style="background-color:rgb(69,137,148);"><span style="width:2em">CSS</span></div>	
-				</div>
-				<div class='wrapcircle' style="left:395px;background-color:rgb(160,191,124)">
-					<div class='tri-80'>
-					</div>
-					<div class='circleDetail' style="background-color:rgb(101,147,74)"><span style="width:1.4em">JS</span></div>	
-				</div>
-				<div class='wrapcircle' style="left:580px;background-color:rgb(137,157,192)">
-					<div class='tri-60'>
-					</div>
-					<div class='tri-over'>
-					</div>
-					<div class='circleDetail' style="background-color:rgb(114,111,128)"><span style="width:2em">PHP</span></div>	
-				</div>
-				<div class='wrapcircle' style="left:765px;background-color:rgb(252,157,154)">
-					<div class='tri-20'>
-					</div>
-					<div class='tri-sm'></div>
-			
-					<div class='circleDetail' style="background-color:rgb(209,73,83)"><span style="width:3.2em">Other<d style="color:#E5E2DF;vertical-align:super">*</d></span></div>	
-				</div>
-				<div class='ite'>
-						[*]:Java,Mysql,基本算法
-					</div>	
-			</div>
-		</div>
-		<div class='other'>
-			<p class='titlefont headCtrl'>■  实践经历</p>
-			<div class='wrapProject' style='position:absolute'>
-				<ul>
-					<li><div class='circleTo' style='background-color:rgb(254,67,101)'></div><span class='item-time'>2011/9</span><span>西安电子科技大学计算机学院031112班 班长</span></li>
-					<li><div class='circleTo' style='background-color:rgb(222,125,44)'></div><span class='item-time'>2011/10</span><span>计算机学院学生会宣传部</span></li>
-					<li><div class='circleTo' style='background-color:rgb(230,179,61)'></div><span class='item-time'>2012</span><span>西安电子科技大学 优秀班干部</span></li>
-					<li><div class='circleTo' style='background-color:rgb(64,116,52)'></div><span class='item-time'>2012/11</span><span>参与举办西电第二届互联网大会</span></li>
-					<li><div class='circleTo' style='background-color:rgb(20,68,106)'></div><span class='item-time'>2013/2</span><span>西安电子科技大学基建处勤工俭学</span></li>
-					<li><div class='circleTo' style='background-color:rgb(56,13,49)'></div><span class='item-time'>2013/6</span><span>国家大学生创业大赛</span></li>
-					<li><div class='circleTo' style='background-color:rgb(33,43,48)'></div><span class='item-time'>2014/7</span><span>阿里巴巴前端工程师实习</span></li>
-				</ul>
-			</div>
-		</div>
-		<div class='footer'><div class='circle'></div></div>
-		<div style='width:100%;height:110px'></div>
-	</body>
+		</li>
+</section>
+<section>
+	<h3>Project : : Intern Experience</h3>
+			<ul>
+				<li><a href="http://movie.taobao.com">Taobao movie</a>
+					<p>2 months experience in Taobao,known as Alibaba Group. Participating in the new PC version of Taobao Movie, and the routine update about mobile website. </p>
+				</li>
+			</ul>
+		</li>
+</section>
+<section>
+	<h3>My Skill && Hobby</h3>	
+	<ul>
+		<li>
+			JavaScript 80%
+		</li>
+		<li>
+			Functional Programming 50%
+		</li>
+		<li>
+			Python 50%
+		</li>
+	</ul>
+</section>
+</div>
+</body>
 </html>
