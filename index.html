@@ -60,14 +60,14 @@
 	@-webkit-keyframes content {
 		0% {
 			top: 500px;
-			-webkit-perspective:0px;
+			opacity: 1;
 		}
-		90%{
+		98%{
 			opacity: 1;
 		}
 		100%{
-			top:100px;
-			-webkit-perspective:300px;
+			top:-150px;
+			/*-webkit-perspective:300px;*/
 			opacity: 0;
 		}
 	}
@@ -83,19 +83,20 @@
 		left: 0;
 		right: 0;
 		margin: 0 auto;
-		-webkit-animation-delay:13s;
-		-webkit-animation:content 20s forwards;
+		opacity: 0;
+		-webkit-animation:content 20s linear forwards;
+		-webkit-animation-delay:9s;
+
 	}
 	.content p{
 		position: absolute;
 		top: 100px;
 		color: #FFE629;
-		font-size: 50px;
+		font-size: 30px;
 		overflow: hidden;
 		text-align: justify;
 		line-height: 50px;
-		border:1px solid;
-		-webkit-transform:rotateX(40deg);
+		-webkit-transform:rotateX(35deg);
 	}
 	@-webkit-keyframes nav {
 		from{
@@ -119,14 +120,19 @@
 		opacity: 0;
 		color: #C39041;
 		-webkit-animation:nav 3s ease-in forwards;
-		-webkit-animation-delay:18s;
+		-webkit-animation-delay:30s;
 	}
 	.nav h4{
 		font-size: 50px;
 	}
+	.nav ul{
+		display: -webkit-flex;
+		display: flex;
+	}
 	.nav li{
-		display: inline-block;
-		margin: 30px;
+		-webkit-flex:1;
+		flex:1;
+		text-align: center;
 	}
 	.nav a{
 		text-decoration: none;
@@ -138,9 +144,13 @@
 	@-webkit-keyframes pres {
 		from{
 			opacity: 1;
+			display: block;
+			z-index: 99;
 		}
 		to{
 			opacity: 0;
+			display: none;
+			z-index: -999;
 		}
 	}
 	.pre{
@@ -165,7 +175,7 @@
 </div>
 <div class='title'>STAR WARS</div>
 <div class='content'>
-<p>Night gathers, and now mywatch begins It shall not end until my death. I shall take no wife,hold no lands,father no children. I shallwear no crowns and win no glory. I shall live and die at my post. I am the sword in the darkness. I am the watcher on the walls. I am the fire that burns against the cold, the light that brings the dawn, the horn that wakes the sleepers, the shield that guards the realms of men. I pledge my life and honor to the Night's Watch, for this night and all the nights to come...</p>
+<p>Night gathers, and now my watch begins It shall not end until my death. I shall take no wife,hold no lands,father no children. I shallwear no crowns and win no glory. I shall live and die at my post. I am the sword in the darkness. I am the watcher on the walls. I am the fire that burns against the cold, the light that brings the dawn, the horn that wakes the sleepers, the shield that guards the realms of men. I pledge my life and honor to the Night's Watch, for this night and all the nights to come...</p>
 </div>
 <div class='nav'>
 	<h4 align='center'>寸晓东不是万能的</h4>
