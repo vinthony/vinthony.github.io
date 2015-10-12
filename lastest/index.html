@@ -108,17 +108,21 @@
 	}
 
 	function objectGeneator(){
-		var points = 600;
+		var points = 400;
 		for(var i = 0 ; i< points; i++){
+			var r = Math.random();
+			var g = Math.random();
+			var b = Math.random();
+			var a = Math.random();
 			objects.push({
 				radis:Math.random()*300,
 				xRotate:Math.random()*Math.PI*2,
 				yRotate:Math.random()*Math.PI,
 				color:[
 				//   r  g    b   a
-					Math.random(),Math.random(),Math.random(),Math.random(),
-					Math.random(),Math.random(),Math.random(),Math.random(),
-					Math.random(),Math.random(),Math.random(),Math.random()
+					r,g,b,Math.random(),
+					r,g,b,Math.random(),
+					r,g,b,Math.random()
 				]
 			});
 		}
@@ -126,9 +130,9 @@
 	function initBuffers(colors){
 		// for vertex
 		var vertices = [
-			0.0,	 10.0,	0.0,
-		   -10.0,	-10.0,	0.0,
-			10.0,	-10.0,	0.0
+			0.0,	 15.0,	0.0,
+		   -15.0,	-15.0,	0.0,
+			15.0,	-15.0,	0.0
 		];
 	
 		triangleVertexPositionBuffer = gl.createBuffer();
@@ -213,12 +217,13 @@
 		display: inline-block;
 	}
 	a{
+		color:#eb002a;
 		text-decoration: none;
 	}
 	</style>
 </head>
 <body onload="webGLStart();" style="background:#333">
-<canvas id='main-canvas' style='border:none;' ></canvas>
+<canvas id='main-canvas' style='border:none;' > webgl啊喂！！！！！！</canvas>
 <div class='nav'>
 	<h4 align='center'>寸晓东不是万能的</h4>
 	<ul class="items">
