@@ -29,7 +29,7 @@
 	var shaderProgram;
 	
 	var objects = [];
-	// var deg = 0;
+	var sc = 0.0002;
 	var triangleVertexPositionBuffer;
 	var triangleVertexColorBuffer;
 	  var uniformsThatAreComputedForEachObject = {
@@ -101,28 +101,27 @@
 
 		shaderProgram.colorInfoAttribute = gl.getAttribLocation(shaderProgram,"aVertexColor");
 		gl.enableVertexAttribArray(shaderProgram.colorInfoAttribute);
-
 		shaderProgram.uMVMatrixUniform = gl.getUniformLocation(shaderProgram,"uMVMatrix");
 		shaderProgram.rMatrixUniform = gl.getUniformLocation(shaderProgram,"rMatrix");
 
 	}
 
 	function objectGeneator(){
-		var points = 400;
+		var points = 250;
 		for(var i = 0 ; i< points; i++){
 			var r = Math.random();
 			var g = Math.random();
 			var b = Math.random();
 			var a = Math.random();
 			objects.push({
-				radis:Math.random()*400,
+				radis:Math.random()*200,
 				xRotate:Math.random()*Math.PI*2,
 				yRotate:Math.random()*Math.PI,
 				color:[
 				//   r  g    b   a
-					r,g,b,Math.random(),
-					r,g,b,Math.random(),
-					r,g,b,Math.random()
+					r,g,b,a,
+					r,g,b,a,
+					r,g,b,a
 				]
 			});
 		}
@@ -130,9 +129,9 @@
 	function initBuffers(colors){
 		// for vertex
 		var vertices = [
-			0.0,	 15.0,	0.0,
-		   -15.0,	-15.0,	0.0,
-			15.0,	-15.0,	0.0
+			0.0,	 7.0,	0.0,
+		   -7.0,	-7.0,	0.0,
+			7.0,	-7.0,	0.0
 		];
 	
 		triangleVertexPositionBuffer = gl.createBuffer();
@@ -147,13 +146,30 @@
 		triangleVertexColorBuffer.itemSize = 4;
 		triangleVertexColorBuffer.numItems = 3;
 	}
+	function bindKeyboard(){
+		function keydown(ele){
+			if(ele.keyCode == 37) //left
+			{
+				sc *= 0.1;
+			}else if(ele.keyCode == 39){ //right
+				sc *= 10;
+			}else if(ele.keyCode == 38){ // up
+				sc += 0.0001;
+			}else if(ele.keyCode == 40){ // down
+				sc -= 0.0001;
+			}
+			console.log(sc);
+		};
+
+		document.onkeydown = keydown;
+	}
 	function drawScene(deg){
-		deg *= 0.0002;
+		deg *= sc;
 		gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 		var aspect = gl.viewportWidth / gl.viewportHeight;
 		var projectionMatrix = makePerspective(fieldOfViewRadians, aspect, 1, 2000);
-        var cameraPosition = [0, 0, 300];
+        var cameraPosition = [0, 0, 100];
 	    var target = [0, 0, 0];
 	    var up = [0, 1, 0];
 	    var cameraMatrix = makeLookAt(cameraPosition, target, up, makeIdentity()); 
@@ -189,8 +205,9 @@
 	 	initGL(canvas);
 	 	initShaders();
 	 	objectGeneator();
-	 	gl.clearColor(0.0, 0.0, 0.0, 1.0);
+	 	gl.clearColor(0.99, 0.99, 0.99, 1.0);
 	 	gl.enable(gl.DEPTH_TEST);
+	 	bindKeyboard();
 		requestAnimationFrame(drawScene);
 	 }
 	</script>
@@ -232,6 +249,5 @@
 		<li><a href="http://github.com/vinthony">Github</a></li>
 	</ul>
 </div>
-<br/>
 </body>
 </html>
