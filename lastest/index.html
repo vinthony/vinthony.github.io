@@ -1,183 +1,224 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<!-- 2015.5 -->
-	<meta charset='utf8'>
 	<title>寸晓东不是万能的</title>
+	<meta charset='utf8'>
+	<link rel="stylesheet" type="text/css" href="https://necolas.github.io/normalize.css/3.0.2/normalize.css">
+	<script type="text/javascript" src='http://webglfundamentals.org/webgl/resources/webgl-3d-math.js'></script>
+	<script id="shader-fs" type="x-shader/x-fragment">
+	  precision mediump float;
+	  varying vec4 vColor;
+	  void main(void) {
+	    gl_FragColor = vColor;
+	  }
+	</script>
+
+	<script id="shader-vs" type="x-shader/x-vertex">
+	  attribute vec3 aVertexPosition;
+	  attribute vec4 aVertexColor;
+	  varying vec4 vColor;
+	  uniform mat4 uMVMatrix;
+	  void main(void) {
+	    gl_Position =  uMVMatrix * vec4(aVertexPosition, 1.0);
+	    vColor = aVertexColor;
+	  }
+	</script>
+	
+	<script type="text/javascript">
+	var gl;
+	var shaderProgram;
+	
+	var objects = [];
+	// var deg = 0;
+	var triangleVertexPositionBuffer;
+	var triangleVertexColorBuffer;
+	  var uniformsThatAreComputedForEachObject = {
+	    u_worldViewProjection:   makeIdentity(),
+	    u_world:                 makeIdentity(),
+	    u_worldInverseTranspose: makeIdentity(),
+	  };
+	function degToRad(d) {
+    	return d * Math.PI / 180;
+  	}
+
+  var cameraAngleRadians = degToRad(0);
+  var fieldOfViewRadians = degToRad(60);
+	function initGL(canvas){
+		try{
+			gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+			canvas.width = window.innerWidth;
+			canvas.height = window.innerHeight;
+			gl.viewportWidth = canvas.width;
+			gl.viewportHeight = canvas.height;
+		}catch(e){
+			console.log(e);
+		}
+		if(!gl){
+			alert("can not init webgl");
+		}
+	}
+	function getShader(gl,id){
+		var shaderScript = document.getElementById(id);
+		if(!shaderScript){return null;}
+		var str = "";
+		var k = shaderScript.firstChild;
+		while(k){
+			if(k.nodeType == 3){
+				str += k.textContent;
+			}
+			k = k.nextSibling;
+		}
+		var shader;
+		if (shaderScript.type == "x-shader/x-fragment"){
+			shader = gl.createShader(gl.FRAGMENT_SHADER);
+		}else if(shaderScript.type == "x-shader/x-vertex"){
+			shader = gl.createShader(gl.VERTEX_SHADER);
+		}else{
+			return null;
+		}
+		gl.shaderSource(shader,str);
+		gl.compileShader(shader);
+		if(!gl.getShaderParameter(shader, gl.COMPILE_STATUS)){
+			alert(gl.getShaderInfoLog(shader));
+			return null;
+		}
+		return shader;
+	}
+
+	function initShaders(){
+		var fragmentShader = getShader(gl,"shader-fs");
+		var vertexShader = getShader(gl,"shader-vs");
+		shaderProgram = gl.createProgram();
+		gl.attachShader(shaderProgram, vertexShader);
+		gl.attachShader(shaderProgram, fragmentShader);
+		gl.linkProgram(shaderProgram);
+		if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)){
+			alert("couldn't init shaders")
+		}
+		gl.useProgram(shaderProgram);
+		shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");	
+		gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
+
+		shaderProgram.colorInfoAttribute = gl.getAttribLocation(shaderProgram,"aVertexColor");
+		gl.enableVertexAttribArray(shaderProgram.colorInfoAttribute);
+
+		shaderProgram.uMVMatrixUniform = gl.getUniformLocation(shaderProgram,"uMVMatrix");
+		shaderProgram.rMatrixUniform = gl.getUniformLocation(shaderProgram,"rMatrix");
+
+	}
+
+	function objectGeneator(){
+		var points = 600;
+		for(var i = 0 ; i< points; i++){
+			objects.push({
+				radis:Math.random()*300,
+				xRotate:Math.random()*Math.PI*2,
+				yRotate:Math.random()*Math.PI,
+				color:[
+				//   r  g    b   a
+					Math.random(),Math.random(),Math.random(),Math.random(),
+					Math.random(),Math.random(),Math.random(),Math.random(),
+					Math.random(),Math.random(),Math.random(),Math.random()
+				]
+			});
+		}
+	}
+	function initBuffers(colors){
+		// for vertex
+		var vertices = [
+			0.0,	 10.0,	0.0,
+		   -10.0,	-10.0,	0.0,
+			10.0,	-10.0,	0.0
+		];
+	
+		triangleVertexPositionBuffer = gl.createBuffer();
+		gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexPositionBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+		triangleVertexPositionBuffer.itemSize = 3;
+		triangleVertexPositionBuffer.numItems = 3;
+		// for color
+		triangleVertexColorBuffer = gl.createBuffer();
+		gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexColorBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+		triangleVertexColorBuffer.itemSize = 4;
+		triangleVertexColorBuffer.numItems = 3;
+	}
+	function drawScene(deg){
+		deg *= 0.0003;
+		console.log(deg);
+		gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+		var aspect = gl.viewportWidth / gl.viewportHeight;
+		var projectionMatrix = makePerspective(fieldOfViewRadians, aspect, 1, 2000);
+        var cameraPosition = [0, 0, 300];
+	    var target = [0, 0, 0];
+	    var up = [0, 1, 0];
+	    var cameraMatrix = makeLookAt(cameraPosition, target, up, makeIdentity()); 
+	    var viewMatrix = makeInverse(cameraMatrix);
+
+		objects.forEach(function(object){
+			  initBuffers(object.color);
+			  var xRotationMatrix = makeXRotation(object.xRotate * deg);
+		      var yRotationMatrix = makeYRotation(object.yRotate * deg);
+		      var translationMatrix = makeTranslation(0, 0, object.radis);
+		      var matrix = matrixMultiply(xRotationMatrix, yRotationMatrix);
+		      var worldMatrix = matrixMultiply(translationMatrix, matrix,
+		          uniformsThatAreComputedForEachObject.u_world);
+		      // Multiply the matrices.
+		      var matrix = matrixMultiply(worldMatrix, viewMatrix);
+		      matrixMultiply(matrix, projectionMatrix, uniformsThatAreComputedForEachObject.u_worldViewProjection);
+		      makeTranspose(makeInverse(worldMatrix), uniformsThatAreComputedForEachObject.u_worldInverseTranspose);
+
+			gl.bindBuffer(gl.ARRAY_BUFFER,triangleVertexPositionBuffer);
+			gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute,triangleVertexPositionBuffer.itemSize,gl.FLOAT,false,0,0);
+			gl.bindBuffer(gl.ARRAY_BUFFER,triangleVertexColorBuffer);
+			gl.vertexAttribPointer(shaderProgram.colorInfoAttribute,triangleVertexColorBuffer.itemSize, gl.FLOAT,false,
+				0,0);
+			
+			gl.uniformMatrix4fv(shaderProgram.uMVMatrixUniform,false,uniformsThatAreComputedForEachObject.u_worldViewProjection);
+			gl.drawArrays(gl.TRIANGLES,0,triangleVertexPositionBuffer.numItems);
+		});
+		requestAnimationFrame(drawScene);
+
+	}
+	function webGLStart(){
+	 	var canvas = document.getElementById("main-canvas");
+	 	initGL(canvas);
+	 	initShaders();
+	 	objectGeneator();
+	 	gl.clearColor(0.0, 0.0, 0.0, 1.0);
+	 	gl.enable(gl.DEPTH_TEST);
+		requestAnimationFrame(drawScene);
+	 }
+	</script>
 	<style type="text/css">
-	body,html{margin: 0;padding: 0;background-color: #020202;overflow: hidden;display: block;height: 100%;position: relative;
-
-	}
-	ul,li{list-style: none;padding: 0;margin: 0}
-	span{position:absolute;width: 2px;height: 2px;display: inline-block;background-color: #fff}
-	@-webkit-keyframes titlemove {
-		0% {
-			font-size: 350px;
-			line-height: 315px;
-			width: 1400px;
-			height: 600px;
-			opacity: 1;
-			transform:rotateX(1deg);
-		}
-		50%{
-			transform:rotateX(5deg);
-			opacity: 1;
-		}
-		95%{
-			transform:rotateX(45deg);
-			opacity: 1;
-		}
-		100%{
-			transform:rotateX(48deg);
-			width: 60px;
-			line-height:12px;
-			font-size:15px;
-			height: 40px;
-			opacity: 0;
-		}
-	}
-	.title{
-		font-family:starwar;
-		position: absolute;
-		opacity: 0;
-		top: 0;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		margin: auto;
-		text-align: center;
-		-webkit-text-fill-color:transparent;
-		-webkit-text-stroke:3px #C39041;
-		-webkit-animation:titlemove 13s ease-out forwards;
-		-webkit-animation-delay:3s;
-	}
-
-	@font-face{
-		font-family: starwar;
-		src:url(../assets/starwar.ttf);
-	}
-
-	@-webkit-keyframes content {
-		0% {
-			top: 500px;
-			opacity: 1;
-		}
-		98%{
-			opacity: 1;
-		}
-		100%{
-			top:-150px;
-			/*-webkit-perspective:300px;*/
-			opacity: 0;
-		}
-	}
-	.content{
-		-webkit-perspective-origin:50% 50%;
-		-webkit-perspective: 400px;
-		font-family: Verdana;
-		font-weight: 700;
-		position: absolute;
-		display: block;
-		width: 800px;
-		height: 900px;
-		left: 0;
-		right: 0;
-		margin: 0 auto;
-		opacity: 0;
-		-webkit-animation:content 20s linear forwards;
-		-webkit-animation-delay:9s;
-
-	}
-	.content p{
-		position: absolute;
-		top: 100px;
-		color: #FFE629;
-		font-size: 30px;
-		overflow: hidden;
-		text-align: justify;
-		line-height: 50px;
-		-webkit-transform:rotateX(35deg);
-	}
-	@-webkit-keyframes nav {
-		from{
-			opacity: 0;
-		}
-		to{
-			opacity: 1;
-		}
-	}
 	.nav{
 		position: absolute;
-		width: 700px;
-		height: 300px;
-		font-size: 30px;
-		font-weight: 700;
-		top: 0;
+		top:0;
 		left: 0;
 		right: 0;
 		bottom: 0;
 		margin: auto;
-		opacity: 0;
-		color: #C39041;
-		-webkit-animation:nav 3s ease-in forwards;
-		-webkit-animation-delay:28s;
+		background-color: rgba(255,255,255,0.8);
+		width: 400px;
+		height: 100px;
+		border-radius: 10px;
 	}
-	.nav h4{
-		font-size: 50px;
+	ul,li{
+		list-style:none;
 	}
-	.nav ul{
-		display: -webkit-flex;
-		display: flex;
+	ul li {
+		width: 60px;
+		display: inline-block;
 	}
-	.nav li{
-		-webkit-flex:1;
-		flex:1;
-		text-align: center;
-	}
-	.nav a{
+	a{
 		text-decoration: none;
-		color: #C39041;
-	}
-	.nav a:hover{
-		color:#fff;
-	}
-	@-webkit-keyframes pres {
-		from{
-			opacity: 1;
-			display: block;
-			z-index: 99;
-		}
-		to{
-			opacity: 0;
-			display: none;
-			z-index: -999;
-		}
-	}
-	.pre{
-		position: absolute;
-		z-index: 99;
-		width: 1500px;
-		height: 800px;
-		overflow: hidden;
-		color: #1CEDF0;
-		font-size: 30px;
-		text-align: center;
-		line-height: 600px;
-		background-color: #000;
-		-webkit-animation:pres 4s ease-in forwards;
 	}
 	</style>
-	<!-- // <script type="text/javascript" src='https://code.createjs.com/soundjs-0.6.0.min.js'></script> -->
 </head>
-<body>
-<audio src='http://vinthony.u.qiniudn.com/starwar.mp3' autoplay="autoplay" loop="loop"></audio>
-<div class='pre'>
-	a long time ago in a galaxy far,far away...
-</div>
-<div class='title'>STAR WARS</div>
-<div class='content'>
-<p>Night gathers, and now my watch begins It shall not end until my death. I shall take no wife,hold no lands,father no children. I shallwear no crowns and win no glory. I shall live and die at my post. I am the sword in the darkness. I am the watcher on the walls. I am the fire that burns against the cold, the light that brings the dawn, the horn that wakes the sleepers, the shield that guards the realms of men. I pledge my life and honor to the Night's Watch, for this night and all the nights to come...</p>
-</div>
+<body onload="webGLStart();" style="background:#333">
+<canvas id='main-canvas' style='border:none;' ></canvas>
 <div class='nav'>
 	<h4 align='center'>寸晓东不是万能的</h4>
 	<ul class="items">
@@ -188,27 +229,6 @@
 		<li><a href="http://github.com/vinthony">Github</a></li>
 	</ul>
 </div>
+<br/>
 </body>
-<script type="text/javascript">
-	(function(){
-		count = 400;
-		function init(){
-			var fra = document.createDocumentFragment();
-			var b = document.getElementsByTagName("body")[0]
-			var w = b.clientWidth;
-			var h = b.offsetHeight;
-			for(var i = 0;i<count ;i++){
-				var sp = document.createElement("span")
-				sp.style.left =random(0,w) +"px"
-				sp.style.top = random(0,h) +"px"
-				fra.appendChild(sp)
-			}
-			b.appendChild(fra)
-		}
-		function random(start,end){
-			return Math.floor(Math.random()*(end-start)+start)
-		}
-		init()
-	})()
-</script>
 </html>
