@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>HomePage of vinthony</title>
+	<meta charset='utf8'>
+	<link rel="stylesheet" type="text/css" href="https://necolas.github.io/normalize.css/3.0.2/normalize.css">
+	<script type="text/javascript" src='http://webglfundamentals.org/webgl/resources/webgl-3d-math.js'></script>
+	<script id="shader-fs" type="x-shader/x-fragment">
+	  precision mediump float;
+	  varying vec4 vColor;
+	  void main(void) {
+	    gl_FragColor = vColor;
+	  }
+	</script>
+
+	<script id="shader-vs" type="x-shader/x-vertex">
+	  attribute vec3 aVertexPosition;
+	  attribute vec4 aVertexColor;
+	  varying vec4 vColor;
+	  uniform mat4 uMVMatrix;
+	  void main(void) {
+	    gl_Position =  uMVMatrix * vec4(aVertexPosition, 1.0);
+	    vColor = aVertexColor;
+	  }
+	</script>
+	
+	<script type="text/javascript">
+	var gl;
+	var shaderProgram;
+	
+	var objects = [];
+	var sc = 0.0002;
+	var triangleVertexPositionBuffer;
+	var triangleVertexColorBuffer;
+	  var uniformsThatAreComputedForEachObject = {
+	    u_worldViewProjection:   makeIdentity(),
+	    u_world:                 makeIdentity(),
+	    u_worldInverseTranspose: makeIdentity(),
+	  };
+	function degToRad(d) {
+    	return d * Math.PI / 180;
+  	}
+
+  var cameraAngleRadians = degToRad(0);
+  var fieldOfViewRadians = degToRad(60);
+	function initGL(canvas){
+		try{
+			gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+			canvas.width = window.innerWidth;
+			canvas.height = window.innerHeight;
+			gl.viewportWidth = canvas.width;
+			gl.viewportHeight = canvas.height;
+		}catch(e){
+			console.log(e);
+		}
+		if(!gl){
+			alert("can not init webgl");
+		}
+	}
+	function getShader(gl,id){
+		var shaderScript = document.getElementById(id);
+		if(!shaderScript){return null;}
+		var str = "";
+		var k = shaderScript.firstChild;
+		while(k){
+			if(k.nodeType == 3){
+				str += k.textContent;
+			}
+			k = k.nextSibling;
+		}
+		var shader;
+		if (shaderScript.type == "x-shader/x-fragment"){
+			shader = gl.createShader(gl.FRAGMENT_SHADER);
+		}else if(shaderScript.type == "x-shader/x-vertex"){
+			shader = gl.createShader(gl.VERTEX_SHADER);
+		}else{
+			return null;
+		}
+		gl.shaderSource(shader,str);
+		gl.compileShader(shader);
+		if(!gl.getShaderParameter(shader, gl.COMPILE_STATUS)){
+			alert(gl.getShaderInfoLog(shader));
+			return null;
+		}
+		return shader;
+	}
+
+	function initShaders(){
+		var fragmentShader = getShader(gl,"shader-fs");
+		var vertexShader = getShader(gl,"shader-vs");
+		shaderProgram = gl.createProgram();
+		gl.attachShader(shaderProgram, vertexShader);
+		gl.attachShader(shaderProgram, fragmentShader);
+		gl.linkProgram(shaderProgram);
+		if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)){
+			alert("couldn't init shaders")
+		}
+		gl.useProgram(shaderProgram);
+		shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");	
+		gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
+
+		shaderProgram.colorInfoAttribute = gl.getAttribLocation(shaderProgram,"aVertexColor");
+		gl.enableVertexAttribArray(shaderProgram.colorInfoAttribute);
+		shaderProgram.uMVMatrixUniform = gl.getUniformLocation(shaderProgram,"uMVMatrix");
+		shaderProgram.rMatrixUniform = gl.getUniformLocation(shaderProgram,"rMatrix");
+
+	}
+
+	function objectGeneator(){
+		var points = 80;
+		for(var i = 0 ; i< points; i++){
+			var r = Math.random();
+			var g = Math.random();
+			var b = Math.random();
+			var a = Math.random();
+			objects.push({
+				radis:Math.random()*40,
+				xRotate:Math.random()*Math.PI*2,
+				yRotate:Math.random()*Math.PI,
+				color:[
+				//   r  g    b   a
+					r,g,b,a,
+					r,g,b,a,
+					r,g,b,a
+				]
+			});
+		}
+	}
+	function initBuffers(colors){
+		// for vertex
+		var vertices = [
+			0.0,	 7.0,	0.0,
+		   -7.0,	-7.0,	0.0,
+			7.0,	-7.0,	0.0
+		];
+	
+		triangleVertexPositionBuffer = gl.createBuffer();
+		gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexPositionBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+		triangleVertexPositionBuffer.itemSize = 3;
+		triangleVertexPositionBuffer.numItems = 3;
+		// for color
+		triangleVertexColorBuffer = gl.createBuffer();
+		gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexColorBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+		triangleVertexColorBuffer.itemSize = 4;
+		triangleVertexColorBuffer.numItems = 3;
+	}
+	function bindKeyboard(){
+		function keydown(ele){
+			if(ele.keyCode == 37) //left
+			{
+				sc *= 0.1;
+			}else if(ele.keyCode == 39){ //right
+				sc *= 10;
+			}else if(ele.keyCode == 38){ // up
+				sc += 0.0001;
+			}else if(ele.keyCode == 40){ // down
+				sc -= 0.0001;
+			}
+			console.log(sc);
+		};
+
+		document.onkeydown = keydown;
+	}
+	function drawScene(deg){
+		deg *= sc;
+		gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+		var aspect = gl.viewportWidth / gl.viewportHeight;
+		var projectionMatrix = makePerspective(fieldOfViewRadians, aspect, 1, 2000);
+        var cameraPosition = [0, 0, 100];
+	    var target = [0, 0, 0];
+	    var up = [0, 1, 0];
+	    var cameraMatrix = makeLookAt(cameraPosition, target, up, makeIdentity()); 
+	    var viewMatrix = makeInverse(cameraMatrix);
+
+		objects.forEach(function(object){
+			  initBuffers(object.color);
+			  var xRotationMatrix = makeXRotation(object.xRotate * deg);
+		      var yRotationMatrix = makeYRotation(object.yRotate * deg);
+		      var translationMatrix = makeTranslation(0, 0, object.radis);
+		      var matrix = matrixMultiply(xRotationMatrix, yRotationMatrix);
+		      var worldMatrix = matrixMultiply(translationMatrix, matrix,
+		          uniformsThatAreComputedForEachObject.u_world);
+		      // Multiply the matrices.
+		      var matrix = matrixMultiply(worldMatrix, viewMatrix);
+		      matrixMultiply(matrix, projectionMatrix, uniformsThatAreComputedForEachObject.u_worldViewProjection);
+		      makeTranspose(makeInverse(worldMatrix), uniformsThatAreComputedForEachObject.u_worldInverseTranspose);
+
+			gl.bindBuffer(gl.ARRAY_BUFFER,triangleVertexPositionBuffer);
+			gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute,triangleVertexPositionBuffer.itemSize,gl.FLOAT,false,0,0);
+			gl.bindBuffer(gl.ARRAY_BUFFER,triangleVertexColorBuffer);
+			gl.vertexAttribPointer(shaderProgram.colorInfoAttribute,triangleVertexColorBuffer.itemSize, gl.FLOAT,false,
+				0,0);
+			
+			gl.uniformMatrix4fv(shaderProgram.uMVMatrixUniform,false,uniformsThatAreComputedForEachObject.u_worldViewProjection);
+			gl.drawArrays(gl.TRIANGLES,0,triangleVertexPositionBuffer.numItems);
+		});
+		requestAnimationFrame(drawScene);
+
+	}
+	function webGLStart(){
+	 	var canvas = document.getElementById("main-canvas");
+	 	initGL(canvas);
+	 	initShaders();
+	 	objectGeneator();
+	 	gl.clearColor(0.99, 0.99, 0.99, 1.0);
+	 	gl.enable(gl.DEPTH_TEST);
+	 	bindKeyboard();
+		requestAnimationFrame(drawScene);
+	 }
+	</script>
+	<style type="text/css">
+	.nav{
+		position: absolute;
+		top:0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		margin: auto;
+		background-color: rgba(255,255,255,0.8);
+		width: 600px;
+		height: 100px;
+		border-radius: 10px;
+	}
+	ul,li{
+		list-style:none;
+	}
+	ul li {
+		/*width: 100px;*/
+		margin:0 20px;
+		display: inline-block;
+	}
+	a{
+		color:#eb002a;
+		text-decoration: none;
+	}
+	</style>
+</head>
+<body onload="webGLStart();" style="background:#333">
+<canvas id='main-canvas' style='border:none;' > webgl啊喂！！！！！！</canvas>
+<div class='nav'>
+	<h4 align='center'>Cun Xiaodong's HomePage</h4>
+	<ul class="items" align='center'>
+		<li><a href="http://vinthony.github.io/resume/index.html">Resume</a></li>
+		<li><a href="https://github.com/vinthony/vinthony.github.io/issues">Blog</a></li>
+		<li><a href="https://www.researchgate.net/profile/Xiaodong_Cun">ResearchGate</a></li>
+		<li><a href="http://weibo.com/vinthony">Weibo</a></li>
+		<li><a href="http://github.com/vinthony">Github</a></li>
+		<li><a href=""></a></li>
+	</ul>
+</div>
+</body>
+</html>
