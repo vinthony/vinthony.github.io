@@ -3,7 +3,7 @@
 * [一些demo](http://vinthony.github.io/demos/index.html)
 * [AMS(asking me anything)](https://github.com/vinthony/ama)
 
-###主页索引：
+### 主页索引：
 
 * [2016.8 2016WWDC](http://vinthony.github.io/lastest/index.html)
 * [2015.10 WebGL三角形](http://vinthony.github.io/2015.10/index.html)
