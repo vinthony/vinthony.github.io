@@ -5,7 +5,8 @@
 
 ### 主页索引：
 
-* [2016.8 2016WWDC](http://vinthony.github.io/lastest/index.html)
+* [2017.8 Researcher style](http://vinthony.github.io/latest/index.html)
+* [2016.8 2016WWDC](http://vinthony.github.io/2016.8/index.html)
 * [2015.10 WebGL三角形](http://vinthony.github.io/2015.10/index.html)
 * [2015.5 星球大战](http://vinthony.github.io/2015.5/index.html)
 * [2015.4 神奈川冲浪里](http://vinthony.github.io/2015.4/index.html)
