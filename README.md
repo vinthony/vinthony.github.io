@@ -1,11 +1,11 @@
-* [主页](http://vinthony.github.io)
+* [科研主页](http://vinthony.github.io)
 * [我的博客](https://github.com/vinthony/vinthony.github.io/issues)
 * [一些demo](http://vinthony.github.io/demos/index.html)
 * [AMS(asking me anything)](https://github.com/vinthony/ama)
 
-### 主页索引：
+### 个人主页索引：
 
-* [2017.8 Researcher style](http://vinthony.github.io/latest/index.html)
+* [2017.8 Researcher style](http://vinthony.github.io/2017.8/index.html)
 * [2016.8 2016WWDC](http://vinthony.github.io/2016.8/index.html)
 * [2015.10 WebGL三角形](http://vinthony.github.io/2015.10/index.html)
 * [2015.5 星球大战](http://vinthony.github.io/2015.5/index.html)
